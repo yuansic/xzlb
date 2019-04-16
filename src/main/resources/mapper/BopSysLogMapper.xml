@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xz.dao.BopSysLogMapper">
+
+  <!-- 新增操作日志 -->
+  <insert id="insert" parameterType="com.xz.entity.BopSysLog">
+		INSERT INTO bop_sys_log(
+				id,
+				log_type,
+				log_title,
+				create_by,
+			    create_time,
+			    remote_addr,
+			    user_agent,
+			    request_uri,
+				method,
+				params,
+				exception
+		) VALUES (
+			  #{id},
+			  #{type},
+			  #{title},
+			  #{createBy.id},
+			  #{createDate},
+			  #{remoteAddr},
+			  #{userAgent},
+			  #{requestUri},
+			  #{method},
+			  #{params},
+		 		''
+		)
+	</insert>
+
+	<!-- 查询日志信息 -->
+	<select id="findAllList" resultType="com.xz.entity.BopSysLog">
+		SELECT
+		a.id AS "id",
+		a.log_type AS "type",
+		a.log_title AS "title",
+		a.create_time AS "createDate",
+		a.remote_addr AS "remoteAddr",
+		a.user_agent AS "userAgent",
+		a.request_uri AS "requestUri",
+		a.method AS "method",
+		a.params AS "params",
+		a.exception AS "exception",
+		u.id AS "createBy.id",
+		u.name AS "createBy.name"
+		FROM bop_sys_log a
+		JOIN bop_sys_user u ON u.id = a.create_by
+		WHERE a.create_date BETWEEN #{beginDate} AND #{endDate}
+		<if test="title != null and title != ''">
+			AND a.title LIKE
+			<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+			<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+			<if test="dbName == 'mysql'">CONCAT('%', #{title}, '%')</if>
+		</if>
+		<if test="createBy != null and createBy.id != null and createBy.id != ''">
+			AND a.create_by = #{createBy.id}
+		</if>
+		<if test="requestUri != null and requestUri != ''">
+			AND a.request_uri LIKE
+			<if test="dbName == 'oracle'">'%'||#{requestUri}||'%'</if>
+			<if test="dbName == 'mssql'">'%'+#{requestUri}+'%'</if>
+			<if test="dbName == 'mysql'">CONCAT('%', #{requestUri}, '%')</if>
+		</if>
+		<if test="exception != null and exception != ''">
+			AND a.type = #{TYPE_EXCEPTION}
+		</if>
+		ORDER BY a.create_date DESC
+	</select>
+
+
+</mapper>

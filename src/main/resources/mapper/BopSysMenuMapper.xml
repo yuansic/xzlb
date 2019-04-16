@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xz.dao.BopSysMenuMapper">
+
+	<!-- 新增菜单信息 -->
+	<insert id="insert" parameterType="com.xz.entity.BopSysMenu">
+		INSERT INTO bop_sys_menu(
+			id,
+			<if test="parentId != null">
+				parent_id,
+			</if>
+			<if test="parentIds != null">
+				parent_ids,
+			</if>
+			<if test="name != null">
+				menu_name,
+			</if>
+			<if test="href != null">
+				menu_href,
+			</if>
+			<if test="target != null">
+				menu_target,
+			</if>
+			<if test="icon != null">
+				menu_icon,
+			</if>
+			<if test="sort != null">
+				menu_sort,
+			</if>
+			<if test="isShow != null">
+				is_show,
+			</if>
+			<if test="isDefault != null">
+				is_default,
+			</if>
+			<if test="permission != null">
+				permission,
+			</if>
+			<if test="createBy != null">
+				create_by,
+			</if>
+			<if test="createDate != null">
+				create_time,
+			</if>
+			<if test="updateBy != null">
+				update_by,
+			</if>
+			<if test="updateDate != null">
+				update_time,
+			</if>
+			<if test="remarks != null">
+				remarks,
+			</if>
+			del_flag
+		) VALUES (
+			#{id},
+			<if test="parentId != null">
+				#{parentId},
+			</if>
+			<if test="parentIds != null">
+				#{parentIds},
+			</if>
+			<if test="name  != null">
+				#{name},
+			</if>
+			<if test="href  != null">
+				#{href},
+			</if>
+			<if test="target != null">
+				#{target},
+			</if>
+			<if test="icon != null">
+				#{icon},
+			</if>
+			<if test="sort != null">
+				#{sort},
+			</if>
+			<if test="isShow != null">
+				#{isShow},
+			</if>
+			<if test="isDefault != null">
+				#{isDefault},
+			</if>
+			<if test="permission != null">
+				#{permission},
+			</if>
+			<if test="createBy != null">
+				#{createBy},
+			</if>
+			<if test="createDate != null">
+				#{createDate},
+			</if>
+			<if test="updateBy != null">
+				#{updateBy},
+			</if>
+			<if test="updateDate != null">
+				#{updateDate},
+			</if>
+			<if test="remarks != null">
+				#{remarks},
+			</if>
+			#{delFlag}
+		)
+	</insert>
+
+	<!-- 更新菜单信息 -->
+	<update id="update" parameterType="com.xz.entity.BopSysMenu">
+		UPDATE bop_sys_menu SET
+		    <if test="parentId != null">
+				parent_id = #{parentId},
+			</if>
+			<if test="parentIds != null">
+				parent_ids = #{parentIds},
+			</if>
+			<if test="name != null">
+				menu_name = #{name},
+			</if>
+			<if test="href != null">
+				menu_href = #{href},
+			</if>
+		    <if test="target != null">
+				menu_target = #{target},
+			</if>
+			<if test="icon != null">
+				menu_icon = #{icon},
+			</if>
+			<if test="sort != null">
+				menu_sort = #{sort},
+			</if>
+			<if test="isShow != null">
+				is_show = #{isShow},
+			</if>
+			<if test="isDefault != null">
+				is_default = #{isDefault},
+			</if>
+			<if test="permission != null">
+				permission = #{permission},
+			</if>
+			<if test="updateBy != null">
+				update_by = #{updateBy},
+			</if>
+			<if test="updateDate != null">
+				update_time = #{updateDate},
+			</if>
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+
+	<!--更新所有父级ids -->
+	<update id="updateParentIds" parameterType="com.xz.entity.BopSysMenu">
+		UPDATE bop_sys_menu SET
+			parent_id = #{parentId},
+			parent_ids = #{parentIds}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 更新排序-->
+	<update id="updateSort" parameterType="com.xz.entity.BopSysMenu">
+		UPDATE bop_sys_menu SET
+			menu_sort = #{sort}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 逻辑删除菜单信息 -->
+	<update id="delete" parameterType="com.xz.entity.BopSysMenu">
+		UPDATE bop_sys_menu SET
+		del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id} OR parent_ids LIKE CONCAT('%,', #{id}, ',%')
+	</update>
+
+
+	<!--//////////////////////查询//////////////////////////-->
+	<sql id="menuColumns">
+		a.id,
+		a.parent_id AS "parent.id",
+		a.parent_id AS "parentId",
+		a.parent_ids,
+		a.menu_name AS "name",
+		a.menu_href AS "href",
+		a.menu_target AS "target",
+		a.menu_icon AS "icon",
+		a.menu_sort AS "sort",
+		a.is_show AS "isShow",
+		a.is_default AS "isDefault",
+		a.permission,
+		a.remarks,
+		a.create_by AS "createBy",
+		a.create_time AS "createDate",
+		a.update_by AS "updateBy",
+		a.update_time AS "updateDate",
+		a.del_flag,
+		p.menu_name AS "parent.name"
+	</sql>
+	<sql id="menuJoins">
+		LEFT JOIN bop_sys_menu p ON p.id = a.parent_id
+    </sql>
+	<!-- 根据菜单ID查询菜单信息-->
+	<select id="get" parameterType="com.xz.entity.BopSysMenu" resultType="com.xz.entity.BopSysMenu">
+		SELECT
+		<include refid="menuColumns"/>
+		FROM bop_sys_menu a
+		<include refid="menuJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 查询系统中所有启用状态的菜单 -->
+	<select id="findAllList" parameterType="com.xz.entity.BopSysMenu" resultType="com.xz.entity.BopSysMenu">
+		SELECT
+		<include refid="menuColumns"/>
+		FROM bop_sys_menu a
+		<include refid="menuJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		ORDER BY a.menu_sort
+	</select>
+
+	<!-- 根据用户ID查询改用户拥有的菜单信息 -->
+	<select id="findUserMenuInfo" parameterType="com.xz.entity.BopSysUserRole" resultType="com.xz.entity.BopSysMenu">
+		SELECT
+			<include refid="menuColumns"/>
+		FROM bop_sys_menu a
+		<include refid="menuJoins"/>
+		INNER JOIN bop_sys_role_menu rm ON rm.menu_id = a.id
+		INNER JOIN bop_sys_user_role ur ON ur.role_id = rm.role_id
+		WHERE ur.user_id = #{userId};
+	</select>
+
+</mapper>

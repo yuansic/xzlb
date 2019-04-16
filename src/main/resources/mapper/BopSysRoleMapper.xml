@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xz.dao.BopSysRoleMapper">
+
+	<!-- 新增角色信息 -->
+	<insert id="insert" parameterType="com.xz.entity.BopSysRole">
+		INSERT INTO bop_sys_role(
+			id,
+			<if test="officeId != null">
+				office_id,
+			</if>
+			<if test="name != null">
+				role_name,
+			</if>
+			<if test="enname != null">
+				role_enname,
+			</if>
+			<if test="roleType != null">
+				role_type,
+			</if>
+			<if test="dataScope != null">
+				data_scope,
+			</if>
+			<if test="createBy != null">
+				create_by,
+			</if>
+			<if test="createDate != null">
+				create_time,
+			</if>
+			<if test="updateBy != null">
+				update_by,
+			</if>
+			<if test="updateDate != null">
+				update_time,
+			</if>
+			<if test="sysData != null">
+				is_sys,
+			</if>
+			<if test="useable != null">
+				useable,
+			</if>
+			<if test="remarks != null">
+				remarks,
+			</if>
+			del_flag
+		) VALUES (
+			#{id},
+			<if test="officeId != null">
+				#{officeId},
+			</if>
+			<if test="name != null">
+				#{name},
+			</if>
+			<if test="enname != null">
+				#{enname},
+			</if>
+			<if test="roleType != null">
+				#{roleType},
+			</if>
+			<if test="dataScope != null">
+				#{dataScope},
+			</if>
+			<if test="createBy != null">
+				#{createBy},
+			</if>
+			<if test="createDate != null">
+				#{createDate},
+			</if>
+			<if test="updateBy != null">
+				#{updateBy},
+			</if>
+			<if test="updateDate != null">
+				#{updateDate},
+			</if>
+			<if test="sysData != null">
+				#{sysData},
+			</if>
+			<if test="useable != null">
+				#{useable},
+			</if>
+			<if test="remarks != null">
+				#{remarks},
+			</if>
+			#{delFlag}
+		)
+	</insert>
+
+	<!-- 插入用户和角色关联表数据 -->
+	<insert id="insertUserRole" parameterType="com.xz.entity.BopSysUserRole">
+		INSERT INTO bop_sys_user_role(user_id, role_id)
+		<foreach collection="sysRoleList" item="role" separator=" union all ">
+			SELECT #{userId}, #{role.id} FROM dual
+		</foreach>
+	</insert>
+
+	<!-- 删除用户和角色关联表数据-->
+	<update id="deleteUserRole" parameterType="com.xz.entity.BopSysUserRole">
+		DELETE FROM bop_sys_user_role WHERE user_id = #{userId}
+	</update>
+
+	<!-- 更新角色信息 -->
+	<update id="update" parameterType="com.xz.entity.BopSysRole">
+		UPDATE bop_sys_role SET
+			<if test="name != null">
+				role_name = #{name},
+			</if>
+			<if test="enname != null">
+				role_enname = #{enname},
+			</if>
+			<if test="roleType != null">
+				role_type = #{roleType},
+			</if>
+			<if test="dataScope != null">
+				data_scope = #{dataScope},
+			</if>
+			<if test="updateBy != null">
+				update_by = #{updateBy},
+			</if>
+			<if test="sysData != null">
+				is_sys = #{sysData},
+			</if>
+			<if test="useable != null">
+				useable = #{useable},
+			</if>
+			<if test="remarks != null">
+				remarks = #{remarks},
+			</if>
+			update_time = #{updateDate}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 逻辑删除角色信息 -->
+	<update id="delete" parameterType="com.xz.entity.BopSysRole">
+		UPDATE bop_sys_role SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 删除角色菜单信息 -->
+	<delete id="deleteRoleMenu" parameterType="com.xz.entity.BopSysRole">
+		DELETE FROM bop_sys_role_menu WHERE role_id = #{id}
+	</delete>
+
+	<!-- 根据角色ID和菜单ID删除角色菜单关联信息 -->
+	<delete id="deleteRoleMenuForRoleIdAndMenuId" parameterType="com.xz.entity.BopSysRoleMenu">
+		DELETE FROM bop_sys_role_menu WHERE role_id = #{roleId} AND menu_id = #{menuId}
+	</delete>
+
+	<!-- 新增角色菜单信息 -->
+	<insert id="insertRoleMenu" parameterType="com.xz.entity.BopSysRole">
+		INSERT INTO bop_sys_role_menu(role_id, menu_id)
+		<foreach collection="menuList" item="menu" separator=" union all ">
+			SELECT #{id}, #{menu.id} FROM dual
+		</foreach>
+	</insert>
+
+	<!-- 新增角色菜单信息 -->
+	<insert id="insertRoleMenuForMenuId" parameterType="com.xz.entity.BopSysRole">
+		INSERT INTO bop_sys_role_menu(role_id, menu_id)
+		<foreach collection="menuIdList" item="menu" separator=" union all ">
+			SELECT #{id}, #{menu} FROM dual
+		</foreach>
+	</insert>
+
+
+	<resultMap id="roleResult" type="com.xz.entity.BopSysRole">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="enname" column="enname" />
+		<result property="roleType" column="roleType" />
+		<result property="dataScope" column="dataScope" />
+		<result property="remarks" column="remarks" />
+		<result property="useable" column="useable" />
+		<result property="sysData" column="sysData" />
+		<collection property="menuList" ofType="com.xz.entity.BopSysMenu">
+			<id property="id" column="menuList.id" />
+			<id property="parentId" column="menuList.parentId" />
+			<id property="parentIds" column="menuList.parentIds"/>
+			<id property="name" column="menuList.name" />
+			<id property="href" column="menuList.href" />
+			<id property="target" column="menuList.target" />
+			<id property="icon" column="menuList.icon" />
+			<id property="sort" column="menuList.sort" />
+			<id property="isShow" column="menuList.isShow" />
+			<id property="isDefault" column="menuList.isDefault" />
+			<id property="permission" column="menuList.permission" />
+			<id property="remarks" column="menuList.remarks" />
+		</collection>
+	</resultMap>
+
+	<sql id="roleColumns">
+    	a.id,
+    	a.role_name AS "name",
+    	a.role_enname AS "enname",
+    	a.role_type AS "roleType",
+		a.data_scope AS "dataScope",
+		a.remarks,
+		a.create_by AS "createBy",
+		a.create_time AS "createDate",
+		a.update_by AS "updateBy",
+		a.update_time AS "updateDate",
+		a.del_flag,
+    	a.useable AS useable,
+    	a.is_sys AS sysData
+    </sql>
+
+	<!-- 根据角色ID查询角色详细信息 -->
+	<select id="get" resultMap="roleResult">
+		SELECT
+		<include refid="roleColumns"/>,
+		m.id AS "menuList.id",
+		m.parent_id AS "menuList.parentId",
+		m.parent_ids AS "menuList.parentIds",
+		m.menu_name AS "menuList.name",
+		m.menu_href AS "menuList.href",
+		m.menu_target AS "menuList.target",
+		m.menu_icon AS "menuList.icon",
+		m.menu_sort AS "menuList.sort",
+		m.is_show AS "menuList.isShow",
+		m.is_default AS "menuList.isDefault",
+		m.permission AS "menuList.permission",
+		m.remarks AS "menuList.remarks"
+		FROM bop_sys_role a
+		LEFT JOIN bop_sys_role_menu rm ON rm.role_id = a.id
+		LEFT JOIN bop_sys_menu m ON m.id = rm.menu_id
+		WHERE a.id = #{id}
+	</select>
+
+
+	<!-- 查询角色菜单关联信息 -->
+	<select id="fineRoleMenu" resultMap="roleResult">
+		SELECT
+		<include refid="roleColumns"/>,
+		m.id AS "menuList.id",
+		m.parent_id AS "menuList.parentId",
+		m.parent_ids AS "menuList.parentIds",
+		m.menu_name AS "menuList.name",
+		m.menu_href AS "menuList.href",
+		m.menu_target AS "menuList.target",
+		m.menu_icon AS "menuList.icon",
+		m.menu_sort AS "menuList.sort",
+		m.is_show AS "menuList.isShow",
+		m.is_default AS "menuList.isDefault",
+		m.permission AS "menuList.permission",
+		m.remarks AS "menuList.remarks"
+		FROM bop_sys_role a
+		LEFT JOIN bop_sys_role_menu rm ON rm.role_id = a.id
+		LEFT JOIN bop_sys_menu m ON m.id = rm.menu_id
+	</select>
+
+
+	<!-- 查询所有角色信息 -->
+	<select id="findAllList" resultType="com.xz.entity.BopSysRole">
+		SELECT
+		<include refid="roleColumns"/>
+		FROM bop_sys_role a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		ORDER BY a.role_name
+	</select>
+
+	<!-- 根据用户ID查询用户角色关联信息 -->
+	<select id="findUserRoleByUserId" resultType="com.xz.entity.BopSysUserRole">
+		SELECT user_id AS "userId",role_id AS "roleId" FROM bop_sys_user_role r WHERE r.user_id = #{userId}
+	</select>
+</mapper>

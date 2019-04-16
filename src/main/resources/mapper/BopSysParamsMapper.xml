@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xz.dao.BopSysParamsMapper">
+  <resultMap id="BaseResultMap" type="com.xz.entity.BopSysParams">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="param_cn_name" jdbcType="VARCHAR" property="paramCnName" />
+    <result column="param_en_name" jdbcType="VARCHAR" property="paramEnName" />
+    <result column="param_value" jdbcType="VARCHAR" property="paramValue" />
+    <result column="param_type" jdbcType="VARCHAR" property="paramType" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_modify" jdbcType="VARCHAR" property="isModify" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, param_cn_name, param_en_name, param_value, param_type, remark, is_modify
+  </sql>
+  <select id="selectByExample" parameterType="com.xz.entity.BopSysParamsExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from bop_sys_params
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bop_sys_params
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from bop_sys_params
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.xz.entity.BopSysParamsExample">
+    delete from bop_sys_params
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.xz.entity.BopSysParams">
+    insert into bop_sys_params (id, param_cn_name, param_en_name, 
+      param_value, param_type, remark, 
+      is_modify)
+    values (#{id,jdbcType=VARCHAR}, #{paramCnName,jdbcType=VARCHAR}, #{paramEnName,jdbcType=VARCHAR}, 
+      #{paramValue,jdbcType=VARCHAR}, #{paramType,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{isModify,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xz.entity.BopSysParams">
+    insert into bop_sys_params
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="paramCnName != null">
+        param_cn_name,
+      </if>
+      <if test="paramEnName != null">
+        param_en_name,
+      </if>
+      <if test="paramValue != null">
+        param_value,
+      </if>
+      <if test="paramType != null">
+        param_type,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="isModify != null">
+        is_modify,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="paramCnName != null">
+        #{paramCnName,jdbcType=VARCHAR},
+      </if>
+      <if test="paramEnName != null">
+        #{paramEnName,jdbcType=VARCHAR},
+      </if>
+      <if test="paramValue != null">
+        #{paramValue,jdbcType=VARCHAR},
+      </if>
+      <if test="paramType != null">
+        #{paramType,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isModify != null">
+        #{isModify,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.xz.entity.BopSysParamsExample" resultType="java.lang.Long">
+    select count(*) from bop_sys_params
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update bop_sys_params
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paramCnName != null">
+        param_cn_name = #{record.paramCnName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paramEnName != null">
+        param_en_name = #{record.paramEnName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paramValue != null">
+        param_value = #{record.paramValue,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paramType != null">
+        param_type = #{record.paramType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isModify != null">
+        is_modify = #{record.isModify,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update bop_sys_params
+    set id = #{record.id,jdbcType=VARCHAR},
+      param_cn_name = #{record.paramCnName,jdbcType=VARCHAR},
+      param_en_name = #{record.paramEnName,jdbcType=VARCHAR},
+      param_value = #{record.paramValue,jdbcType=VARCHAR},
+      param_type = #{record.paramType,jdbcType=VARCHAR},
+      remark = #{record.remark,jdbcType=VARCHAR},
+      is_modify = #{record.isModify,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xz.entity.BopSysParams">
+    update bop_sys_params
+    <set>
+      <if test="paramCnName != null">
+        param_cn_name = #{paramCnName,jdbcType=VARCHAR},
+      </if>
+      <if test="paramEnName != null">
+        param_en_name = #{paramEnName,jdbcType=VARCHAR},
+      </if>
+      <if test="paramValue != null">
+        param_value = #{paramValue,jdbcType=VARCHAR},
+      </if>
+      <if test="paramType != null">
+        param_type = #{paramType,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isModify != null">
+        is_modify = #{isModify,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xz.entity.BopSysParams">
+    update bop_sys_params
+    set param_cn_name = #{paramCnName,jdbcType=VARCHAR},
+      param_en_name = #{paramEnName,jdbcType=VARCHAR},
+      param_value = #{paramValue,jdbcType=VARCHAR},
+      param_type = #{paramType,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      is_modify = #{isModify,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
