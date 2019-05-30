@@ -211,8 +211,8 @@ public class SysUserController extends BaseController {
         String passWord;
         try {
             //解密RSA
-//            PrivateKey privateKey = RSAUtils.getPrivateKey(rsaPrivateKey);
-//            passWord = RSAUtils.decryptionByPrivateKey(param.getLdapPassword(), privateKey);
+            PrivateKey privateKey = RSAUtils.getPrivateKey(rsaPrivateKey);
+            passWord = RSAUtils.decryptionByPrivateKey(param.getLdapPassword(), privateKey);
 
             //查询用户
             SysUserRes sysUserRes = iSysUser.selectSysUserByLoginName(param.getLoginName());
@@ -221,7 +221,7 @@ public class SysUserController extends BaseController {
                 return new Result<>(ResultCode.ERROR.getCode(), "用户不存在,请联系管理员添加。", null);
             }
             //验证密码
-            if (!param.getLdapPassword().equals(sysUserRes.getPassword())) {
+            if (!passWord.equals(sysUserRes.getPassword())) {
                 //密码错误
                 return new Result<>(ResultCode.PARAM.getCode(), "密码错误。", null);
             }
